@@ -7,8 +7,20 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
+  app.get('/', (req, res) => {
+    res.render('index');
+})
+
+app.get('/login', (req, res) => {
+    res.render('login');
+})
+
+app.get('/package', (req, res) => {
+    res.render('package');
+})
+
+app.get('/active', (req, res) => {
+    res.render('active');
 })
 
 app.listen(port, () => {

@@ -1,0 +1,15 @@
+{
+  "name": "phan_mem_giam_sat",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:phongit1995/phan_mem_giam_sat.git",
+  "author": "phong <phongit1995@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.1.0"
+  }
+}

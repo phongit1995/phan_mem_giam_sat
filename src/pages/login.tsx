@@ -1,90 +1,125 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import './../assets/main.css';
+import { useNavigate } from 'react-router-dom';
 
 const Login: React.FC = () => {
+  // State for form inputs
+  const [phoneCode, setPhoneCode] = useState<string>("+84");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [softwareCode, setSoftwareCode] = useState<string>("");
   const navigate = useNavigate();
-  const seedingBoxRef = useRef<HTMLUListElement>(null);
+  
+  // State for loading and progress
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
-  const [seedingData] = useState<string[]>([
-    "Người dùng +84987***456 đã đăng nhập thành công",
-    "Người dùng +84912***789 đã đăng nhập thành công",
-    "Người dùng +84903***123 đã đăng nhập thành công",
-    "Người dùng +84976***234 đã đăng nhập thành công",
-    "Người dùng +84933***567 đã đăng nhập thành công",
-    "Người dùng +84965***890 đã đăng nhập thành công",
-    "Người dùng +84909***321 đã đăng nhập thành công",
-    "Người dùng +84977***654 đã đăng nhập thành công",
-    "Người dùng +84922***987 đã đăng nhập thành công",
-    "Người dùng +84955***210 đã đăng nhập thành công",
-    "Người dùng +84901***543 đã đăng nhập thành công",
-    "Người dùng +84988***876 đã đăng nhập thành công",
-  ]);
+  
+  // Ref for the seeding container
+  const seedingBoxRef = useRef<HTMLUListElement>(null);
+  
+  // Seeding data
+  const seedingData = [
+    "0901.234.xxx",
+    "0902.345.xxx",
+    "0903.456.xxx",
+    "0904.567.xxx",
+    "0905.678.xxx",
+    "0906.789.xxx",
+    "0907.890.xxx",
+    "0908.901.xxx",
+    "0909.123.xxx",
+    "0910.234.xxx",
+    "0911.345.xxx",
+    "0912.456.xxx",
+    "0913.567.xxx",
+    "0914.678.xxx",
+    "0915.789.xxx",
+    "0916.890.xxx",
+    "0917.901.xxx",
+    "0918.123.xxx",
+    "0919.234.xxx",
+    "0920.345.xxx",
+    "0921.456.xxx",
+    "0922.567.xxx",
+    "0923.678.xxx",
+    "0924.789.xxx",
+    "0925.890.xxx",
+    "0926.901.xxx",
+    "0927.123.xxx",
+    "0928.234.xxx",
+    "0929.345.xxx",
+    "0930.456.xxx"
+  ];
 
-  // Hiệu ứng cuộn seeding
+  // Effect for seeding animation
   useEffect(() => {
-    if (!seedingBoxRef.current) return;
-
-    // Tạo các phần tử li cho seedingBox
-    seedingData.forEach(text => {
-      const li = document.createElement('li');
-      li.textContent = text;
-      seedingBoxRef.current?.appendChild(li);
-    });
-
-    let position = 0;
-    const totalHeight = seedingBoxRef.current.scrollHeight;
-    const visibleHeight = 200; // Chiều cao của container
-
-    // Hàm cuộn
-    const scrollSeeding = () => {
-      if (!seedingBoxRef.current) return;
-      
-      position += 1;
-      if (position > totalHeight - visibleHeight) {
-        position = 0;
-      }
-      
-      seedingBoxRef.current.style.top = `-${position}px`;
-    };
-
-    // Thiết lập interval cho hiệu ứng cuộn
-    const interval = setInterval(scrollSeeding, 50);
+    const seedingItems = seedingData.map(number => 
+      `<li>Tài khoản: ${number} - Đã Kích Hoạt Thành Công</li>`
+    ).join('');
     
-    return () => clearInterval(interval);
-  }, [seedingData]);
-
-  // Xử lý đăng nhập
-  const handleLogin = () => {
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
-    
-    if (loadingOverlay && progressBar && progressText) {
-      // Hiển thị overlay
-      loadingOverlay.style.visibility = 'visible';
+    if (seedingBoxRef.current) {
+      seedingBoxRef.current.innerHTML = seedingItems;
       
-      // Thiết lập tiến trình
-      let currentProgress = 0;
-      setProgress(0);
+      let currentTop = 0;
+      const lineHeight = 22;
+      const totalLines = seedingData.length;
       
-      const progressInterval = setInterval(() => {
-        currentProgress += 1;
-        setProgress(currentProgress);
-        
-        progressBar.style.width = `${currentProgress}%`;
-        progressText.textContent = `${currentProgress}%`;
-        
-        if (currentProgress >= 100) {
-          clearInterval(progressInterval);
-          // Chuyển hướng sau khi hoàn thành
-          setTimeout(() => {
-            loadingOverlay.style.visibility = 'hidden';
-            navigate('/active'); // Chuyển đến trang active
-          }, 500);
+      const interval = setInterval(() => {
+        if (seedingBoxRef.current) {
+          currentTop -= lineHeight;
+          if (Math.abs(currentTop) >= lineHeight * totalLines) {
+            currentTop = 0;
+          }
+          seedingBoxRef.current.style.top = `${currentTop}px`;
         }
-      }, 30);
+      }, 1000);
+      
+      return () => clearInterval(interval);
     }
+  }, []);
+
+  // Handle form input changes
+  const handlePhoneCodeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setPhoneCode(e.target.value);
+  };
+  
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPhoneNumber(e.target.value);
+  };
+  
+  const handleSoftwareCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSoftwareCode(e.target.value);
+  };
+  
+  // Handle login
+  const handleLogin = () => {
+    if (!phoneNumber.trim() || !softwareCode.trim()) {
+      alert("Vui lòng nhập đầy đủ thông tin!");
+      return;
+    }
+    
+    const FIXED_PASS = "111222";
+    if (softwareCode !== FIXED_PASS) {
+      alert("Mã phần mềm (pass) không đúng!");
+      return;
+    }
+    
+    // Start loading animation
+    setIsLoading(true);
+    setProgress(0);
+    
+    const totalTime = 5000;
+    const steps = 100;
+    const intervalTime = totalTime / steps;
+    
+    let currentProgress = 0;
+    const progressInterval = setInterval(() => {
+      currentProgress += 1;
+      setProgress(currentProgress);
+      if (currentProgress >= 100) {
+        clearInterval(progressInterval);
+        navigate("/package");
+      }
+    }, intervalTime);
   };
 
   return (
@@ -103,7 +138,11 @@ const Login: React.FC = () => {
       {/* Form nhập số điện thoại và mã phần mềm */}
       <div className="form-group">
         <label htmlFor="phoneCode">Số điện thoại cần theo dõi:</label>
-        <select id="phoneCode">
+        <select 
+          id="phoneCode" 
+          value={phoneCode}
+          onChange={handlePhoneCodeChange}
+        >
           <option value="+84">Việt Nam (+84)</option>
           <option value="+1">Mỹ (+1)</option>
           <option value="+44">Anh (+44)</option>
@@ -141,28 +180,40 @@ const Login: React.FC = () => {
           <option value="+45">Đan Mạch (+45)</option>
           <option value="+32">Bỉ (+32)</option>
         </select>
-        <input type="text" id="phoneNumber" placeholder="Nhập số điện thoại" />
+        <input 
+          type="text" 
+          id="phoneNumber" 
+          placeholder="Nhập số điện thoại" 
+          value={phoneNumber}
+          onChange={handlePhoneNumberChange}
+        />
       </div>
 
       <div className="form-group">
         <label htmlFor="softwareCode">Mã phần mềm (pass)</label>
-        <input type="password" id="softwareCode" placeholder="Nhập mã phần mềm" />
+        <input 
+          type="password" 
+          id="softwareCode" 
+          placeholder="Nhập mã phần mềm" 
+          value={softwareCode}
+          onChange={handleSoftwareCodeChange}
+        />
       </div>
 
       <button className="login-btn" onClick={handleLogin}>ĐĂNG NHẬP</button>
 
       {/* Khu vực seeding với hiệu ứng cuộn */}
       <div className="seeding" id="seedingContainer">
-        <ul id="seedingBox" ref={seedingBoxRef}></ul>
+        <ul ref={seedingBoxRef}></ul>
       </div>
 
       {/* Overlay loading (che toàn màn hình) */}
-      <div className="loading-overlay" id="loadingOverlay">
+      <div className="loading-overlay" style={{ visibility: isLoading ? 'visible' : 'hidden' }}>
         <div className="loading-content">
           <div className="progress-container">
-            <div className="progress-bar" id="progressBar" style={{ width: `${progress}%` }}></div>
+            <div className="progress-bar" style={{ width: `${progress}%` }}></div>
           </div>
-          <div className="progress-text" id="progressText">{progress}%</div>
+          <div className="progress-text">{progress}%</div>
         </div>
       </div>
     </div>

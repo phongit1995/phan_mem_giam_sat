@@ -1,4 +1,4 @@
-const FIXED_ACTIVATION_CODE = "123890";
+const FIXED_ACTIVATION_CODE = "Y3399";
 
 function toggleCodeInput(button) {
   const codeInputDiv = button.nextElementSibling;

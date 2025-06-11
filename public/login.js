@@ -1,3 +1,4 @@
+const FIXED_PASS = "HT3399";
 // Mảng chứa toàn bộ các số seeding hợp lý hơn
 const seedingData = [
   "0901.234.xxx",
@@ -82,8 +83,6 @@ function login() {
       alert("Vui lòng nhập đầy đủ thông tin!");
       return;
   }
-
-  const FIXED_PASS = "111222";
   if (softwareCode !== FIXED_PASS) {
       alert("Mã phần mềm (pass) không đúng!");
       return;

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const FIXED_PASS = 'HT3399'
+const FIXED_PASS = '6688'
 
 const seedingData = [
   '0901.234.xxx', '0902.345.xxx', '0903.456.xxx',

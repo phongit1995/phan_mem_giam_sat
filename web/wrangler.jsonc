@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "quanly68",
+  "compatibility_date": "2026-09-01",
+  "pages_build_output_dir": "dist",
+  "kv_namespaces": [
+    {
+      "binding": "CONFIG",
+      "id": "e51da42f6a454f7e90a6ea20e1374049"
+    }
+  ]
+}

@@ -226,6 +226,47 @@ body {
   background-color: #008ae6;
 }
 
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ==============================
+   ADMIN PAGE
+   ============================== */
+.admin-container h1 {
+  margin-bottom: 20px;
+}
+
+.admin-container .form-group input {
+  font-family: monospace;
+  letter-spacing: 1px;
+}
+
+.admin-logout {
+  background-color: rgba(255, 255, 255, 0.25);
+  margin-top: 12px;
+}
+
+.admin-logout:hover {
+  background-color: rgba(255, 255, 255, 0.35);
+}
+
+.admin-message {
+  margin-top: 18px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.admin-message.ok {
+  background-color: rgba(40, 167, 69, 0.85);
+}
+
+.admin-message.error {
+  background-color: rgba(220, 53, 69, 0.85);
+}
+
 /* Seeding scroll area */
 .seeding {
   position: relative;

@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-
-const FIXED_ACTIVATION_CODE = '123890'
+import { loadCodes } from '../lib/codes'
 
 interface PackageCardProps {
   title: string
@@ -14,14 +13,25 @@ const PackageCard = ({ title }: PackageCardProps) => {
   const [showProgress, setShowProgress] = useState(false)
   const [showLoadingText, setShowLoadingText] = useState(false)
   const [progress, setProgress] = useState(0)
+  const [isVerifying, setIsVerifying] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const handleToggle = () => {
     setShowInput(!showInput)
   }
 
-  const handleActivate = () => {
-    if (code === FIXED_ACTIVATION_CODE) {
+  const handleActivate = async () => {
+    if (isVerifying || showProgress) return
+    if (!code.trim()) {
+      alert('Vui lòng nhập mã kích hoạt')
+      return
+    }
+
+    setIsVerifying(true)
+    const { code2 } = await loadCodes()
+    setIsVerifying(false)
+
+    if (code.trim() === code2) {
       setShowProgress(true)
       setShowLoadingText(true)
 
@@ -62,8 +72,8 @@ const PackageCard = ({ title }: PackageCardProps) => {
           value={code}
           onChange={e => setCode(e.target.value)}
         />
-        <button className="btn-activate" onClick={handleActivate}>
-          Kích Hoạt
+        <button className="btn-activate" onClick={handleActivate} disabled={isVerifying}>
+          {isVerifying ? 'Đang kiểm tra...' : 'Kích Hoạt'}
         </button>
         <div className={`pkg-progress-container ${!showProgress ? 'hidden' : ''}`}>
           <div className="pkg-progress-bar" style={{ width: progress + '%' }} />

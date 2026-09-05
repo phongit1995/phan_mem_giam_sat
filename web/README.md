@@ -1,73 +1,54 @@
-# React + TypeScript + Vite
+# quanly68.com
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Web tĩnh React + Vite, deploy lên Cloudflare Pages. Mã đăng nhập và mã kích hoạt
+được lưu trong Cloudflare KV và sửa được qua trang admin, không cần deploy lại.
 
-Currently, two official plugins are available:
+Cách hoạt động phía web (`src/lib/codes.ts`): khi mở web, fetch `/api/codes` **1 lần**.
+Fetch được thì lưu vào bộ nhớ + `localStorage` và so sánh ngay trên client.
+Fetch lỗi thì dùng mã đã lưu lần trước, không có thì dùng mặc định `3388` / `123890`.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Lệnh
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+yarn dev                  # dev UI (không có API -> dùng mã mặc định)
+yarn dev:cf               # build + chạy Pages Functions local tại http://localhost:8788
+yarn build                # tsc + vite build -> dist/
+yarn typecheck:functions  # typecheck thư mục functions/
+yarn deploy               # build + deploy production (nhánh main)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Lần đầu trên máy mới: `npx wrangler login`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Trang admin
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- URL: `/admin`
+- Đăng nhập bằng mật khẩu admin (biến môi trường `ADMIN_PASSWORD` của Pages project).
+- Sửa **Mã 1** (mã phần mềm khi đăng nhập) và **Mã 2** (mã kích hoạt gói), bấm Lưu. Có hiệu lực ngay.
+
+Đổi mật khẩu admin:
+
+```bash
+printf 'MAT_KHAU_MOI' | npx wrangler pages secret put ADMIN_PASSWORD --project-name=quanly68
+```
+
+hoặc trên Dashboard: Workers & Pages → quanly68 → Settings → Variables and Secrets.
+
+## API (Pages Functions, thư mục `functions/`)
+
+| Method | Path               | Auth                     | Mô tả                                   |
+|--------|--------------------|--------------------------|-----------------------------------------|
+| GET    | `/api/codes`       | không                    | Trả `{code1, code2}` (web gọi khi mở trang) |
+| GET    | `/api/admin/codes` | header `x-admin-password` | Trả `{code1, code2}`                    |
+| PUT    | `/api/admin/codes` | header `x-admin-password` | Body `{code1, code2}`, lưu vào KV       |
+
+KV namespace `quanly68-config` (binding `CONFIG`) khai báo trong `wrangler.jsonc`.
+Key `code1`, `code2`. Nếu key chưa có, mặc định là `3388` và `123890`.
+
+## Local dev với API
+
+`yarn dev:cf` dùng KV local (rỗng, nên dùng mã mặc định). Để có mật khẩu admin
+local, tạo file `.dev.vars` (đã gitignore):
+
+```
+ADMIN_PASSWORD=admin68
 ```

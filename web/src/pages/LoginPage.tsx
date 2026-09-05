@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-
-const FIXED_PASS = '1122'
+import { loadCodes } from '../lib/codes'
 
 const seedingData = [
   '0901.234.xxx', '0902.345.xxx', '0903.456.xxx',
@@ -66,6 +65,7 @@ const LoginPage = () => {
   const [phoneNumber, setPhoneNumber] = useState('')
   const [softwareCode, setSoftwareCode] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [isVerifying, setIsVerifying] = useState(false)
   const [progress, setProgress] = useState(0)
   const [scrollTop, setScrollTop] = useState(0)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -88,12 +88,19 @@ const LoginPage = () => {
     return () => clearInterval(timer)
   }, [])
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!phoneNumber.trim() || !softwareCode.trim()) {
       alert('Vui lòng nhập đầy đủ thông tin!')
       return
     }
-    if (softwareCode !== FIXED_PASS) {
+    if (isVerifying) return
+
+    // Đợi lần fetch mã đầu tiên (nếu còn đang chạy); lỗi thì dùng mã đã lưu / mặc định.
+    setIsVerifying(true)
+    const { code1 } = await loadCodes()
+    setIsVerifying(false)
+
+    if (softwareCode.trim() !== code1) {
       alert('Mã phần mềm (pass) không đúng!')
       return
     }
@@ -170,8 +177,8 @@ const LoginPage = () => {
           />
         </div>
 
-        <button className="login-btn" onClick={handleLogin}>
-          ĐĂNG NHẬP
+        <button className="login-btn" onClick={handleLogin} disabled={isVerifying}>
+          {isVerifying ? 'ĐANG KIỂM TRA...' : 'ĐĂNG NHẬP'}
         </button>
 
         {/* Seeding scroll area */}

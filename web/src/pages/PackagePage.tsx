@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const FIXED_ACTIVATION_CODE = '123890'
+const FIXED_ACTIVATION_CODE = '123789'
 
 interface PackageCardProps {
   title: string

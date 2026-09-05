@@ -10,7 +10,7 @@
       <stop offset="0%" stop-color="#f0c040"/>
       <stop offset="100%" stop-color="#e07b00"/>
     </linearGradient>
-    <!-- 88 text gradient -->
+    <!-- 68 text gradient -->
     <linearGradient id="tg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#ffffff"/>
       <stop offset="100%" stop-color="#c8b8ff"/>
@@ -26,7 +26,7 @@
   <!-- Q tail stroke -->
   <line x1="23" y1="23" x2="29" y2="30" stroke="url(#qg)" stroke-width="3.5" stroke-linecap="round"/>
 
-  <!-- "88" small text bottom right -->
+  <!-- "68" small text bottom right -->
   <text
     x="31"
     y="37"
@@ -35,5 +35,5 @@
     font-weight="900"
     text-anchor="middle"
     fill="url(#tg)"
-  >88</text>
+  >68</text>
 </svg>

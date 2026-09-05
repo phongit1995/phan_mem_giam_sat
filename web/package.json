@@ -8,9 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "yarn build && npx wrangler pages deploy dist --project-name=quanly88 --branch=main --commit-dirty=true",
-    "deploy:only": "npx wrangler pages deploy dist --project-name=quanly88 --commit-dirty=true",
-    "deploy:preview": "yarn build && npx wrangler pages deploy dist --project-name=quanly88 --branch=preview --commit-dirty=true"
+    "deploy": "yarn build && npx wrangler pages deploy dist --project-name=quanly68 --branch=main --commit-dirty=true",
+    "deploy:only": "npx wrangler pages deploy dist --project-name=quanly68 --commit-dirty=true",
+    "deploy:preview": "yarn build && npx wrangler pages deploy dist --project-name=quanly68 --branch=preview --commit-dirty=true"
   },
   "dependencies": {
     "react": "^19.2.0",
